@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium बर्थडे गेस्ट लिस्ट</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #ff4757;
+            --secondary: #2f3542;
+            --success: #2ed573;
+            --info: #1e90ff;
+            --bg: #f1f2f6;
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: var(--bg); 
+            margin: 0; 
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container { 
+            max-width: 450px; 
+            width: 100%;
+            background: white; 
+            padding: 30px; 
+            border-radius: 30px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+
+        h2 { 
+            text-align: center; 
+            color: var(--secondary); 
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .sub-text {
+            text-align: center;
+            color: #a4b0be;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .input-box {
+            background: #f9f9f9;
+            padding: 5px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            border: 2px solid #f1f1f1;
+            transition: 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .input-box:focus-within {
+            border-color: var(--primary);
+            background: white;
+        }
+
+        input { 
+            flex: 1;
+            padding: 12px 15px; 
+            border: none; 
+            outline: none; 
+            background: transparent;
+            font-size: 16px;
+        }
+
+        .btn-group { display: flex; gap: 10px; margin-bottom: 25px; }
+
+        button { 
+            flex: 1; 
+            padding: 14px; 
+            border: none; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 15px; 
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-add { background: var(--primary); color: white; box-shadow: 0 10px 20px rgba(255, 71, 87, 0.2); }
+        .btn-pdf { background: var(--secondary); color: white; }
+
+        button:active { transform: scale(0.95); }
+
+        .stats-card {
+            background: linear-gradient(45deg, #ff4757, #ff6b81);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .list-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 15px 10px; border-bottom: 1px solid #f1f1f1; font-size: 15px; color: var(--secondary); }
+        
+        .index { color: #ced6e0; font-weight: bold; width: 30px; }
+        .name { font-weight: 500; }
+        
+        .delete-btn { 
+            color: #ff4757; 
+            cursor: pointer; 
+            background: #fff0f0;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        /* PDF साठी खास स्टाईल */
+        #report-area { padding: 10px; }
+
+        @media print { .no-print { display: none; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>वाढदिवस यादी 🎂</h2>
+    <p class="sub-text">२५ फेब्रुवारी २०२६</p>
+
+    <div class="no-print">
+        <div class="input-box">
+            <input type="text" id="guestName" placeholder="पाहुण्याचे नाव..." onkeypress="handleKey(event)">
+        </div>
+        
+        <div class="btn-group">
+            <button class="btn-add" onclick="addGuest()">➕ जोडा</button>
+            <button class="btn-pdf" onclick="generatePDF()">📄 PDF</button>
+        </div>
+    </div>
+
+    <div id="report-area">
+        <div class="stats-card">
+            एकूण पाहुणे: <span id="count">0</span>
+        </div>
+
+        <div class="list-container">
+            <table>
+                <tbody id="tableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyCsgwBoTiEtSNJ2xMm4di0F0GiAtFxoswM",
+        authDomain: "order-b15a8.firebaseapp.com",
+        projectId: "order-b15a8",
+        databaseURL: "https://order-b15a8-default-rtdb.firebaseio.com",
+        storageBucket: "order-b15a8.firebasestorage.app",
+        messagingSenderId: "614443594278",
+        appId: "1:614443594278:web:e31715b6ee592b30326ce7"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const guestRef = database.ref('birthday_guests_premium');
+
+    function addGuest() {
+        const input = document.getElementById('guestName');
+        const name = input.value.trim();
+        if (name !== "") {
+            guestRef.push({ name: name, timestamp: Date.now() });
+            input.value = "";
+            input.focus();
+        }
+    }
+
+    function handleKey(e) { if(e.key === "Enter"){ addGuest(); } }
+
+    guestRef.on('value', (snapshot) => {
+        const tableBody = document.getElementById('tableBody');
+        const countSpan = document.getElementById('count');
+        tableBody.innerHTML = "";
+        let i = 0;
+        
+        snapshot.forEach((childSnapshot) => {
+            i++;
+            const data = childSnapshot.val();
+            const key = childSnapshot.key;
+            
+            tableBody.innerHTML += `<tr>
+                <td class="index">${i}</td>
+                <td class="name">${data.name}</td>
+                <td class="no-print" align="right">
+                    <span class="delete-btn" onclick="deleteGuest('${key}')">काढा</span>
+                </td>
+            </tr>`;
+        });
+        countSpan.innerText = i;
+    });
+
+    function deleteGuest(key) {
+        if(confirm("हे नाव काढायचे का?")) {
+            database.ref('birthday_guests_premium/' + key).remove();
+        }
+    }
+
+    function generatePDF() {
+        const element = document.getElementById('report-area');
+        const opt = {
+            margin: 10,
+            filename: 'बर्थडे_पाहुणे_यादी.pdf',
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    }
+</script>
+
+</body>
+</html>
