@@ -3,32 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>स्मार्ट बर्थडे लिस्ट - एडिट आणि सुरक्षित डिलीट</title>
+    <title>बर्थडे लिस्ट - स्टेटस सह</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
-        :root { --primary: #ff4757; --secondary: #2f3542; --bg: #f1f2f6; --edit: #1e90ff; }
+        :root { --primary: #ff4757; --secondary: #2f3542; --bg: #f1f2f6; --edit: #1e90ff; --success: #2ed573; }
         body { font-family: 'Poppins', sans-serif; background: var(--bg); margin: 0; padding: 10px; }
-        .container { max-width: 450px; margin: 20px auto; background: white; padding: 25px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
+        .container { max-width: 500px; margin: 20px auto; background: white; padding: 25px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
         h2 { text-align: center; color: var(--secondary); margin-bottom: 20px; }
+        
         .input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #f1f1f1; box-sizing: border-box; font-size: 16px; outline: none; }
-        input:focus { border-color: var(--primary); }
+        
         .btn-group { display: flex; gap: 10px; }
         button { flex: 1; padding: 14px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn-add { background: var(--primary); color: white; }
         .btn-pdf { background: var(--secondary); color: white; }
+
         .stats-card { background: var(--primary); color: white; padding: 12px; border-radius: 12px; text-align: center; font-weight: bold; margin-bottom: 15px; }
         
         table { width: 100%; border-collapse: collapse; }
-        td { padding: 12px 5px; border-bottom: 1px solid #f1f1f1; color: var(--secondary); }
-        .actions { display: flex; gap: 8px; justify-content: flex-end; }
-        .edit-btn { color: var(--edit); cursor: pointer; font-size: 13px; font-weight: bold; border: 1px solid var(--edit); padding: 4px 8px; border-radius: 5px; }
-        .delete-btn { color: #ff4757; cursor: pointer; font-size: 13px; font-weight: bold; border: 1px solid #ff4757; padding: 4px 8px; border-radius: 5px; }
-        .list-wrapper { overflow: visible !important; }
+        td { padding: 12px 5px; border-bottom: 1px solid #f1f1f1; font-size: 14px; }
+        
+        /* स्टेटस ड्रॉपडाऊन स्टाईल */
+        .status-select { 
+            padding: 5px; border-radius: 5px; border: 1px solid #ddd; font-size: 12px; cursor: pointer; outline: none;
+        }
+        .status-confirm { background-color: #e8fdf0; color: #27ae60; }
+        .status-cancel { background-color: #fff0f0; color: #e74c3c; }
+        .status-pending { background-color: #f1f2f6; color: #7f8c8d; }
+
+        .actions { display: flex; gap: 5px; justify-content: flex-end; }
+        .edit-btn { color: var(--edit); cursor: pointer; font-size: 12px; border: 1px solid var(--edit); padding: 4px 6px; border-radius: 5px; }
+        .delete-btn { color: #ff4757; cursor: pointer; font-size: 12px; border: 1px solid #ff4757; padding: 4px 6px; border-radius: 5px; }
+        
         @media print { .no-print { display: none !important; } .container { box-shadow: none; width: 100%; } }
     </style>
 </head>
@@ -38,21 +49,19 @@
     <div class="no-print">
         <h2>वाढदिवस यादी 🎂</h2>
         <div class="input-group">
-            <input type="text" id="guestName" placeholder="पाहुण्याचे नाव लिहा...">
+            <input type="text" id="guestName" placeholder="पाहुण्याचे नाव लिहा..." onkeypress="if(event.key==='Enter')addGuest()">
             <div class="btn-group">
                 <button class="btn-add" onclick="addGuest()">✅ जोडा</button>
-                <button class="btn-pdf" onclick="generatePDF()">📄 PDF काढा</button>
+                <button class="btn-pdf" onclick="generatePDF()">📄 PDF</button>
             </div>
         </div>
     </div>
 
     <div id="report-area">
         <div class="stats-card">एकूण पाहुणे: <span id="count">0</span></div>
-        <div class="list-wrapper">
-            <table>
-                <tbody id="tableBody"></tbody>
-            </table>
-        </div>
+        <table>
+            <tbody id="tableBody"></tbody>
+        </table>
     </div>
 </div>
 
@@ -69,13 +78,17 @@
 
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-    const guestRef = database.ref('birthday_guests_v3');
+    const guestRef = database.ref('birthday_guests_premium');
 
     function addGuest() {
         const input = document.getElementById('guestName');
         const name = input.value.trim();
         if (name !== "") {
-            guestRef.push({ name: name, timestamp: Date.now() });
+            guestRef.push({ 
+                name: name, 
+                status: "pending", // Default status
+                timestamp: Date.now() 
+            });
             input.value = "";
         }
     }
@@ -89,33 +102,42 @@
             i++;
             const data = childSnapshot.val();
             const key = childSnapshot.key;
+            const status = data.status || "pending";
+            
             tableBody.innerHTML += `<tr>
-                <td style="width:25px; color:#ccc;">${i}</td>
-                <td><b>${data.name}</b></td>
+                <td style="width:20px; color:#ccc;">${i}</td>
+                <td style="width:40%"><b>${data.name}</b></td>
+                <td>
+                    <select class="status-select status-${status}" onchange="updateStatus('${key}', this.value)">
+                        <option value="pending" ${status === 'pending' ? 'selected' : ''}>सांगता येत नाही</option>
+                        <option value="confirm" ${status === 'confirm' ? 'selected' : ''}>येणार</option>
+                        <option value="cancel" ${status === 'cancel' ? 'selected' : ''}>नाही येणार</option>
+                    </select>
+                </td>
                 <td class="no-print actions">
-                    <span class="edit-btn" onclick="editGuest('${key}', '${data.name}')">एडिट</span>
-                    <span class="delete-btn" onclick="deleteGuest('${key}')">काढा</span>
+                    <span class="edit-btn" onclick="editGuest('${key}', '${data.name}')">🖊️</span>
+                    <span class="delete-btn" onclick="deleteGuest('${key}')">🗑️</span>
                 </td>
             </tr>`;
         });
         countSpan.innerText = i;
     });
 
-    // एडिट फंक्शन
+    function updateStatus(key, newStatus) {
+        database.ref('birthday_guests_premium/' + key).update({ status: newStatus });
+    }
+
     function editGuest(key, oldName) {
-        const newName = prompt("पाहुण्याचे नाव सुधारा:", oldName);
+        const newName = prompt("नाव सुधारा:", oldName);
         if (newName !== null && newName.trim() !== "") {
-            database.ref('birthday_guests_v3/' + key).update({ name: newName.trim() });
+            database.ref('birthday_guests_premium/' + key).update({ name: newName.trim() });
         }
     }
 
-    // डबल कन्फर्मेशन डिलीट
     function deleteGuest(key) {
-        const firstCheck = confirm("हे नाव यादीतून काढायचे का?");
-        if (firstCheck) {
-            const secondCheck = confirm("खात्री आहे ना? नाव कायमचे डिलीट होईल!");
-            if (secondCheck) {
-                database.ref('birthday_guests_v3/' + key).remove();
+        if (confirm("हे नाव काढायचे का?")) {
+            if (confirm("खात्री आहे ना? डिलीट केल्यावर नाव परत येणार नाही!")) {
+                database.ref('birthday_guests_premium/' + key).remove();
             }
         }
     }
@@ -124,7 +146,7 @@
         const element = document.getElementById('report-area');
         const opt = {
             margin: 10,
-            filename: 'पाहुणे_यादी.pdf',
+            filename: 'बर्थडे_पाहुणे_यादी.pdf',
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
