@@ -1,209 +1,143 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="mr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floating बर्थडे गेस्ट लिस्ट</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-    <style>
-        :root {
-            --primary: #d63031;
-            --secondary: #2d3436;
-            --confirm: #27ae60;
-        }
-
-        /* Floating Background Animation */
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            margin: 0; 
-            padding: 15px; 
-            min-height: 100vh;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            display: flex;
-            justify-content: center;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .container { 
-            max-width: 500px; 
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95); /* थोडा पारदर्शक पांढरा */
-            padding: 20px; 
-            border-radius: 20px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            backdrop-filter: blur(5px); /* काचेसारखा इफेक्ट */
-            align-self: flex-start;
-        }
-        
-        h2 { text-align: center; color: var(--secondary); margin: 5px 0 15px 0; font-size: 22px; border-bottom: 2px solid var(--primary); padding-bottom: 5px; }
-        
-        .no-print { margin-bottom: 15px; }
-        .input-group { display: flex; gap: 8px; }
-        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; outline: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
-        
-        .btn-group { display: flex; gap: 8px; margin-top: 10px; }
-        button { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; }
-        .btn-add { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(214, 48, 49, 0.3); }
-        .btn-pdf { background: var(--secondary); color: white; }
-        button:active { transform: scale(0.98); }
-
-        .stats-bar { display: flex; justify-content: space-between; background: #f8f9fa; padding: 10px 12px; border-radius: 8px; margin-bottom: 10px; font-weight: bold; font-size: 13px; border: 1px solid #eee; }
-
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #f8f9fa; color: #666; text-align: left; padding: 10px; font-size: 12px; border-bottom: 1px solid #eee; }
-        td { padding: 10px; border-bottom: 1px solid #f9f9f9; font-size: 14px; }
-        
-        .status-select { padding: 5px; border-radius: 6px; border: 1px solid #ddd; font-size: 12px; outline: none; width: 100%; cursor: pointer; background: white; }
-        
-        .row-confirm { background-color: rgba(46, 213, 115, 0.1) !important; }
-        .row-cancel { background-color: rgba(255, 71, 87, 0.1) !important; }
-
-        .actions { display: flex; gap: 10px; font-size: 18px; justify-content: flex-end; }
-        .icon-btn { cursor: pointer; transition: 0.2s; }
-        
-        @media print { 
-            body { background: white !important; }
-            .no-print, .action-col { display: none !important; }
-            .container { width: 100%; max-width: 100%; box-shadow: none; padding: 0; background: white; }
-            .status-select { border: none; background: transparent; appearance: none; font-weight: bold; }
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#0b4db6" />
+<title>TEAM UNIQUE - RCM Follow-up v3</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#667085;--line:#e6eaf0;--green:#16a34a;--neon:#39ff7a;--blue:#1456c7;--amber:#b86a00;--red:#b42318;--shadow:0 8px 24px rgba(17,24,39,.08)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#eef5ff 0,#f8fafc 260px);font-family:system-ui,-apple-system,"Noto Sans Devanagari","Segoe UI",sans-serif;color:var(--ink)}
+.wrap{max-width:940px;margin:auto;padding:12px 10px 90px}.hero{background:linear-gradient(135deg,#0b4db6,#0d7f5b);color:#fff;border-radius:22px;padding:18px;box-shadow:var(--shadow)}
+.brand{font-size:12px;font-weight:900;letter-spacing:.08em;opacity:.92}.hero h1{font-size:22px;margin:4px 0 5px}.hero p{font-size:13px;opacity:.93;margin:0;line-height:1.5}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:14px}.stat{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:9px 5px;text-align:center}.stat b{display:block;font-size:19px}.stat span{font-size:10px;opacity:.92}
+.reward{background:#fff;border:1px solid #dfe7f0;border-radius:18px;margin:10px 0;padding:13px;box-shadow:0 4px 16px rgba(15,23,42,.045)}.reward h2{font-size:15px;margin:0 0 9px}.rewardGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.rbox{border:1px solid #dfe7f0;background:#f8fbff;border-radius:12px;padding:9px 6px;text-align:center}.rbox b{display:block;font-size:12px;color:#0b4db6}.rbox span{font-size:10px;color:#475467;line-height:1.35;display:block;margin-top:3px}.rewardNote{font-size:10px;color:#667085;line-height:1.45;margin-top:8px}
+.toolbar{position:sticky;top:0;z-index:20;padding:9px 0;background:rgba(245,247,251,.94);backdrop-filter:blur(10px)}input[type=search]{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px 14px;font-size:15px;outline:none;background:#fff;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+.filters{display:flex;gap:7px;overflow:auto;padding:8px 1px 2px;scrollbar-width:none}.filters::-webkit-scrollbar{display:none}.chip{white-space:nowrap;border:1px solid var(--line);background:#fff;padding:8px 11px;border-radius:999px;font-size:12px;font-weight:800;color:#465066;cursor:pointer}.chip.active{border-color:#1d62d1;background:#eaf2ff;color:#0c4cb4}
+.options{background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 11px;margin-top:7px;font-size:12px;color:#4a5568;display:flex;align-items:center;gap:8px}.options input{accent-color:#1456c7}
+.list{display:grid;gap:10px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:13px;box-shadow:0 4px 16px rgba(15,23,42,.045);transition:.2s ease}.card.sent-card{background:linear-gradient(135deg,#ecfff1,#d8ffe4);border:2px solid var(--neon);box-shadow:0 0 0 3px rgba(57,255,122,.12),0 8px 24px rgba(18,183,79,.16)}
+.card.sent-card .name{color:#08783a}.sentTag{display:none;font-size:10px;background:#0ea44b;color:#fff;padding:5px 7px;border-radius:999px;font-weight:900;margin-left:5px}.card.sent-card .sentTag{display:inline-block}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.name{font-size:16px;font-weight:900;line-height:1.2;text-transform:capitalize}.meta{font-size:12px;color:var(--muted);margin-top:4px}.badge{font-size:11px;font-weight:900;padding:6px 8px;border-radius:999px;white-space:nowrap}.b6{background:#eaf8ef;color:#08723a}.b45{background:#eef4ff;color:#174ea6}.b13{background:#fff5e5;color:#8b5700}.b0{background:#fff0ee;color:var(--red)}
+.pvgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin:11px 0 9px}.pv{background:#f8fafc;border:1px solid #edf0f4;border-radius:10px;text-align:center;padding:7px 2px}.pv .m{font-size:10px;color:#7b8495}.pv .v{font-weight:900;font-size:12px;margin-top:2px}.pv.zero .v{color:#b8bec8}.pv.current{background:#fff8e9;border-color:#ffe2a4}
+.info{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}.pill{font-size:11px;background:#f3f6fa;color:#4d596c;padding:6px 8px;border-radius:9px}.pill strong{color:#1f2937}.saving{background:#ecfdf3;color:#08723a}
+.actions{display:grid;grid-template-columns:1.35fr 1fr .9fr;gap:7px}button,a.btn{border:0;border-radius:12px;padding:11px 8px;font-weight:900;font-size:13px;text-align:center;text-decoration:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}.wa{background:#18a957;color:#fff}.call{background:#175cd3;color:#fff}.sentBtn{background:#eef1f5;color:#4b5563}.sentBtn.isdone{background:#12a84f;color:#fff;box-shadow:0 0 12px rgba(57,255,122,.7)}.badphone{opacity:.45;pointer-events:none}
+.empty{padding:34px 18px;text-align:center;color:#667085;background:#fff;border-radius:18px;border:1px solid var(--line)}.footerNote{font-size:11px;color:#7a8493;text-align:center;margin:16px 8px;line-height:1.5}
+@media(max-width:600px){.wrap{padding:9px 8px 80px}.hero{border-radius:18px;padding:15px}.hero h1{font-size:19px}.stats{grid-template-columns:repeat(2,1fr)}.rewardGrid{grid-template-columns:repeat(2,1fr)}.pvgrid{gap:3px}.pv .v{font-size:11px}.actions{grid-template-columns:1.2fr .8fr .85fr}}
+</style>
 </head>
 <body>
+<div class="wrap">
+<section class="hero">
+  <div class="brand">TEAM UNIQUE</div>
+  <h1>📊 6 Month PV Follow-up</h1>
+  <p>March–August PV • Updated WhatsApp Message v3 • Consistency Reward • Call • Sent Tracking</p>
+  <div class="stats">
+    <div class="stat"><b id="statTotal">0</b><span>एकूण</span></div>
+    <div class="stat"><b id="statAug">0</b><span>August बाकी</span></div>
+    <div class="stat"><b id="statSix">0</b><span>6/6 Consistent</span></div>
+    <div class="stat"><b id="statSent">0</b><span>Msg Sent</span></div>
+  </div>
+</section>
 
-<div class="container">
-    <div class="no-print">
-        <h2>🎂 मुलाचा वाढदिवस यादी</h2>
-        <div class="input-group">
-            <input type="text" id="guestName" placeholder="पाहुण्याचे नाव..." onkeypress="if(event.key==='Enter')addGuest()">
-        </div>
-        <div class="btn-group">
-            <button class="btn-add" onclick="addGuest()">जोडा</button>
-            <button class="btn-pdf" onclick="generatePDF()">PDF डाउनलोड</button>
-        </div>
-    </div>
+<section class="reward">
+  <h2>🎁 RCM 6-Month Consistency Reward — मार्गदर्शक</h2>
+  <div class="rewardGrid">
+    <div class="rbox"><b>100–1499 PV</b><span>6 महिन्यांच्या पात्र Total PV च्या 12% DP Value इतकी Free Products</span></div>
+    <div class="rbox"><b>1500+ PV</b><span>1500 DP Value ची Free Products</span></div>
+    <div class="rbox"><b>2500+ PV</b><span>2500 DP Value ची Free Products</span></div>
+    <div class="rbox"><b>5000+ PV</b><span>5000 DP Value ची Free Products</span></div>
+  </div>
+  <div class="rewardNote">टीप: Eligibility ही month-wise purchase व shortfall नियमांवर अवलंबून असते. Reward मध्ये cash ऐवजी products मिळतात. Earned reward नुसार जवळच्या RCM Distribution Center मधून products घेता येतात. अधिकृत Marketing Plan v3 (1 July 2026 पासून लागू) पहा.</div>
+</section>
 
-    <div id="report-area">
-        <div class="stats-bar">
-            <span>एकूण: <span id="count">0</span></span>
-            <span style="color: var(--confirm);">येणार: <span id="conf-count">0</span></span>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 10%;">क्र.</th>
-                    <th style="width: 50%;">नाव</th>
-                    <th style="width: 30%;">स्थिती</th>
-                    <th class="no-print action-col" style="width: 10%;">बदल</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
-    </div>
+<div class="toolbar">
+  <input id="q" type="search" placeholder="🔎 नाव / मोबाईल / शहर शोधा..." autocomplete="off">
+  <div class="filters" id="filters">
+    <button class="chip active" data-f="aug0">August बाकी</button>
+    <button class="chip" data-f="pending">Message बाकी</button>
+    <button class="chip" data-f="sent">✅ Sent</button>
+    <button class="chip" data-f="all">सर्व</button>
+    <button class="chip" data-f="six">6/6</button>
+    <button class="chip" data-f="near">4–5 महिने</button>
+    <button class="chip" data-f="low">1–3 महिने</button>
+    <button class="chip" data-f="inactive">Inactive</button>
+  </div>
+  <label class="options"><input id="includePv" type="checkbox" checked> WhatsApp message मध्ये 6 महिन्यांचा PV जोडा</label>
 </div>
 
+<main class="list" id="list"></main>
+<div class="footerNote">🌿 आरोग्य बचत म्हणजे घरातील नियमित Health / Nutrition / Personal Care / Home Care गरजा नियोजनाने घेऊन अनावश्यक किंवा विस्कळीत खर्च कमी करण्याची संधी. प्रत्यक्ष बचत वापर व उत्पादन निवडीवर अवलंबून असते.<br><b>TEAM UNIQUE</b></div>
+</div>
 <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyCsgwBoTiEtSNJ2xMm4di0F0GiAtFxoswM",
-        authDomain: "order-b15a8.firebaseapp.com",
-        projectId: "order-b15a8",
-        databaseURL: "https://order-b15a8-default-rtdb.firebaseio.com",
-        storageBucket: "order-b15a8.firebasestorage.app",
-        messagingSenderId: "614443594278",
-        appId: "1:614443594278:web:e31715b6ee592b30326ce7"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    const guestRef = database.ref('birthday_guests_premium');
-
-    function addGuest() {
-        const input = document.getElementById('guestName');
-        const name = input.value.trim();
-        if (name !== "") {
-            guestRef.push({ name: name, status: "pending", timestamp: Date.now() });
-            input.value = "";
-        }
-    }
-
-    guestRef.on('value', (snapshot) => {
-        const tableBody = document.getElementById('tableBody');
-        const countSpan = document.getElementById('count');
-        const confCountSpan = document.getElementById('conf-count');
-        tableBody.innerHTML = "";
-        let i = 0, confCount = 0;
-
-        snapshot.forEach((childSnapshot) => {
-            i++;
-            const data = childSnapshot.val();
-            const key = childSnapshot.key;
-            const status = data.status || "pending";
-            if(status === 'confirm') confCount++;
-            
-            const rowClass = status === 'confirm' ? 'row-confirm' : (status === 'cancel' ? 'row-cancel' : '');
-            
-            tableBody.innerHTML += `<tr class="${rowClass}">
-                <td style="color:#888;">${i}</td>
-                <td><b>${data.name}</b></td>
-                <td>
-                    <select class="status-select" onchange="updateStatus('${key}', this.value)">
-                        <option value="pending" ${status === 'pending' ? 'selected' : ''}>ठरले नाही</option>
-                        <option value="confirm" ${status === 'confirm' ? 'selected' : ''}>येणार ✅</option>
-                        <option value="cancel" ${status === 'cancel' ? 'selected' : ''}>नाही ❌</option>
-                    </select>
-                </td>
-                <td class="no-print action-col">
-                    <div class="actions">
-                        <span class="icon-btn" onclick="editGuest('${key}', '${data.name}')">✏️</span>
-                        <span class="icon-btn" onclick="deleteGuest('${key}')">🗑️</span>
-                    </div>
-                </td>
-            </tr>`;
-        });
-        countSpan.innerText = i;
-        confCountSpan.innerText = confCount;
-    });
-
-    function updateStatus(key, newStatus) {
-        database.ref('birthday_guests_premium/' + key).update({ status: newStatus });
-    }
-
-    function editGuest(key, oldName) {
-        const newName = prompt("नाव बदला:", oldName);
-        if (newName && newName.trim() !== "") {
-            database.ref('birthday_guests_premium/' + key).update({ name: newName.trim() });
-        }
-    }
-
-    function deleteGuest(key) {
-        if (confirm("डिलीट करायचे?") && confirm("खात्री आहे ना?")) {
-            database.ref('birthday_guests_premium/' + key).remove();
-        }
-    }
-
-    function generatePDF() {
-        const element = document.getElementById('report-area');
-        const opt = {
-            margin: 10,
-            filename: 'वाढदिवस_पाहुणे_यादी.pdf',
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save();
-    }
+const DATA=[{"id":"3.821175E7","name":"RAJENDRA RAMDAS CHAVAN","mobile":"8999316609","city":"AHMEDNAGAR","district":"Ahmednagar","months":[5039.0,5037.0,5009.0,5001.0,5011.0,0.0],"active":5,"total":25097.0,"augZero":true},{"id":"3.8266315E7","name":"Narayan Aba Bankar","mobile":"9730561250","city":"siddhatek","district":"Ahmednagar","months":[1976.0,2180.0,2023.0,2185.0,2317.0,0.0],"active":5,"total":10681.0,"augZero":true},{"id":"4.2131114E7","name":"Meghmala somnath warad","mobile":"9970127020","city":"AMBEJOGAI","district":"BEED","months":[942.0,474.0,953.0,7452.0,401.0,0.0],"active":5,"total":10222.0,"augZero":true},{"id":"4.1520685E7","name":"VRUSHALI SATISH GUJAR","mobile":"7038936731","city":"AMBAJOGAI","district":"Beed","months":[1162.0,3035.0,1304.0,1110.0,1671.0,0.0],"active":5,"total":8282.0,"augZero":true},{"id":"4.1696511E7","name":"REVATI GANESH NAVALE","mobile":"9270549978","city":"KARJAT","district":"Ahmednagar","months":[1515.0,1504.0,1527.0,1557.0,1613.0,0.0],"active":5,"total":7716.0,"augZero":true},{"id":"4.1535532E7","name":"POONAM BHIMRAO GAVALI","mobile":"9373697939","city":"AMBAJOGAI","district":"Beed","months":[973.0,836.0,2093.0,1020.0,631.0,0.0],"active":5,"total":5553.0,"augZero":true},{"id":"4.1435603E7","name":"SOMNATH GURULING DHAGE","mobile":"9075558204","city":"AMBAJOGAI","district":"Beed","months":[890.0,1585.0,1187.0,944.0,929.0,0.0],"active":5,"total":5535.0,"augZero":true},{"id":"4.1597308E7","name":"AMOL MANMATH SAKHARE","mobile":"8080738880","city":"AMBAJOGAI","district":"Beed","months":[1527.0,1934.0,699.0,579.0,83.0,0.0],"active":5,"total":4822.0,"augZero":true},{"id":"4.198388E7","name":"Angad jagannath panchal","mobile":"7796007387","city":"LATUR","district":"LATUR","months":[802.0,976.0,1434.0,100.0,1217.0,0.0],"active":5,"total":4529.0,"augZero":true},{"id":"4.16607E7","name":"DATTATRAYA NANA KAMBLE","mobile":"9922183777","city":"AMBAJOGAI","district":"Beed","months":[818.0,579.0,1121.0,753.0,426.0,0.0],"active":5,"total":3697.0,"augZero":true},{"id":"3.831188E7","name":"Bhausaheb Dagadu Hole","mobile":"9604719904","city":"rashin","district":"Ahmednagar","months":[570.0,445.0,764.0,661.0,967.0,0.0],"active":5,"total":3407.0,"augZero":true},{"id":"3.8294534E7","name":"Dashrath Balu Londhe","mobile":"9923144446","city":"rashin","district":"Ahmednagar","months":[514.0,622.0,644.0,758.0,505.0,0.0],"active":5,"total":3043.0,"augZero":true},{"id":"3.8057279E7","name":"DEELIP GORAKSH MISAL","mobile":"9359677520","city":"KARJAT","district":"Ahmednagar","months":[698.0,835.0,623.0,83.0,623.0,0.0],"active":5,"total":2862.0,"augZero":true},{"id":"4.161053E7","name":"VISHWANATH RAMALING GUJAR","mobile":"9370091239","city":"AMBAJOGAI","district":"Beed","months":[579.0,845.0,472.0,535.0,294.0,0.0],"active":5,"total":2725.0,"augZero":true},{"id":"3.8705796E7","name":"SURAJ ASHOK VAWALE","mobile":"9604375857","city":"PARBHANI","district":"Parbhani","months":[631.0,426.0,583.0,509.0,509.0,0.0],"active":5,"total":2658.0,"augZero":true},{"id":"4.1451892E7","name":"ANKUSH SUKHADEV GAVALI","mobile":"7620093837","city":"AMBAJOGAI","district":"Beed","months":[347.0,894.0,380.0,772.0,146.0,0.0],"active":5,"total":2539.0,"augZero":true},{"id":"4.223506E7","name":"Akshay daulat dhage","mobile":"8830118411","city":"AMBAJOGAI","district":"BEED","months":[1089.0,119.0,671.0,426.0,100.0,0.0],"active":5,"total":2405.0,"augZero":true},{"id":"4.1656267E7","name":"ASHWINI AMOL GUJAR","mobile":"9307175334","city":"AMBAJOGAI","district":"Beed","months":[575.0,538.0,132.0,296.0,474.0,0.0],"active":5,"total":2015.0,"augZero":true},{"id":"3.8400299E7","name":"pratibha salikram bedre","mobile":"7558384449","city":"Chilwadi","district":"Ahmednagar","months":[336.0,383.0,606.0,316.0,143.0,0.0],"active":5,"total":1784.0,"augZero":true},{"id":"4.1145736E7","name":"Shubham Hanumant Gulve","mobile":"7822800551","city":"Ambajogai","district":"Beed","months":[238.0,486.0,182.0,79.0,736.0,0.0],"active":5,"total":1721.0,"augZero":true},{"id":"3.862323E7","name":"Vandana Dilip Misal","mobile":"7709784067","city":"Karjat","district":"Ahmednagar","months":[385.0,309.0,465.0,83.0,418.0,0.0],"active":5,"total":1660.0,"augZero":true},{"id":"4.1654423E7","name":"PARMESHWAR VAIJNATH HANDARGULE","mobile":"9975890291","city":"AMBAJOGAI","district":"Beed","months":[112.0,800.0,352.0,136.0,75.0,0.0],"active":5,"total":1475.0,"augZero":true},{"id":"4.1610535E7","name":"VAIJENATH SHANKAR BODOKE","mobile":"9096498340","city":"AMBAJOGAI","district":"Beed","months":[192.0,459.0,120.0,480.0,167.0,0.0],"active":5,"total":1418.0,"augZero":true},{"id":"3.9156122E7","name":"Shivkanya Dinesh Ladda","mobile":"9284262661","city":"Parbhani","district":"Parbhani","months":[0.0,1121.0,1904.0,1545.0,520.0,0.0],"active":4,"total":5090.0,"augZero":true},{"id":"4.2265535E7","name":"Sandhya sidheshwar rankhambe","mobile":"9225445175","city":"PARLI","district":"BEED","months":[0.0,1017.0,494.0,556.0,704.0,0.0],"active":4,"total":2771.0,"augZero":true},{"id":"3.9539785E7","name":"ATUL BALASAHEB KHANDARE","mobile":"8007391483","city":"Parbhani","district":"Parbhani","months":[504.0,0.0,817.0,261.0,642.0,0.0],"active":4,"total":2224.0,"augZero":true},{"id":"3.8822499E7","name":"Pandit Haribhau Maske","mobile":"9921420039","city":"Gangakhed","district":"Parbhani","months":[5.0,981.0,0.0,496.0,415.0,0.0],"active":4,"total":1897.0,"augZero":true},{"id":"4.1608313E7","name":"SHIVKANYA JOTIRLING GUJAR","mobile":"9503249994","city":"AMBAJOGAI","district":"Beed","months":[5.0,426.0,0.0,426.0,426.0,0.0],"active":4,"total":1283.0,"augZero":true},{"id":"3.9319249E7","name":"Pundlikrao Kashinath Pandit","mobile":"9637003217","city":"Jalna","district":"Jalna","months":[3.0,632.0,0.0,462.0,157.0,0.0],"active":4,"total":1254.0,"augZero":true},{"id":"4.2083965E7","name":"Varsha balkrishna bhosle","mobile":"8999313453","city":"PARLI VAIJNATH","district":"BEED","months":[60.0,647.0,0.0,248.0,92.0,0.0],"active":4,"total":1047.0,"augZero":true},{"id":"4.1696761E7","name":"POOJA GAJANAN YADAV","mobile":"9529474716","city":"HINGOLI","district":"Hingoli","months":[233.0,348.0,306.0,122.0,0.0,0.0],"active":4,"total":1009.0,"augZero":true},{"id":"4.1988683E7","name":"Vaishali ashok mahajan","mobile":"7020195693","city":"PARBHANI","district":"PARBHANI","months":[286.0,411.0,0.0,166.0,103.0,0.0],"active":4,"total":966.0,"augZero":true},{"id":"3.932125E7","name":"Babita Pravinsing Thakur","mobile":"9284884327","city":"Jalna","district":"Jalna","months":[53.0,0.0,169.0,137.0,60.0,0.0],"active":4,"total":419.0,"augZero":true},{"id":"3.9305031E7","name":"Sandip Bansi Hajare","mobile":"9175627004","city":"parli","district":"Beed","months":[0.0,0.0,996.0,996.0,1112.0,0.0],"active":3,"total":3104.0,"augZero":true},{"id":"3.8825724E7","name":"ANIKET VIJAYSING THAKUR","mobile":"9172396134","city":"Parbhani","district":"Parbhani","months":[1200.0,325.0,0.0,0.0,1475.0,0.0],"active":3,"total":3000.0,"augZero":true},{"id":"4.122633E7","name":"BHAKTI SAMBHAJI DUDHARE","mobile":"8788959957","city":"parbhani","district":"Parbhani","months":[1200.0,0.0,867.0,756.0,0.0,0.0],"active":3,"total":2823.0,"augZero":true},{"id":"4.2090076E7","name":"Omkar kashinath basule","mobile":"8080337115","city":"PARBHANI","district":"PARBHANI","months":[868.0,0.0,1853.0,100.0,0.0,0.0],"active":3,"total":2821.0,"augZero":true},{"id":"4.2373734E7","name":"Shiva somnath swami","mobile":"9730932881","city":"parli","district":"BEED","months":[0.0,0.0,1144.0,694.0,936.0,0.0],"active":3,"total":2774.0,"augZero":true},{"id":"4.2181098E7","name":"Keshav adasaheb tak","mobile":"9922221969","city":"Bori","district":"PARBHANI","months":[1279.0,403.0,0.0,1079.0,0.0,0.0],"active":3,"total":2761.0,"augZero":true},{"id":"4.1754434E7","name":"Ramling panditrao dhage","mobile":"9689299426","city":"Latur","district":"LATUR","months":[1021.0,0.0,0.0,1115.0,426.0,0.0],"active":3,"total":2562.0,"augZero":true},{"id":"4.1786193E7","name":"Balasaheb shrikrishna bidve","mobile":"8805375233","city":"Latur","district":"LATUR","months":[1042.0,0.0,852.0,240.0,0.0,0.0],"active":3,"total":2134.0,"augZero":true},{"id":"4.2291366E7","name":"Vishnu haribhao harkal","mobile":"9860293947","city":"PARBHANI","district":"PARBHANI","months":[0.0,987.0,520.0,104.0,0.0,0.0],"active":3,"total":1611.0,"augZero":true},{"id":"4.2391513E7","name":"Sunil sakharam chauthaiwale","mobile":"7498549139","city":"0.0","district":"0.0","months":[0.0,0.0,552.0,809.0,244.0,0.0],"active":3,"total":1605.0,"augZero":true},{"id":"4.2328923E7","name":"usha vaijenath shinde","mobile":"8485030544","city":"parli","district":"BEED","months":[0.0,0.0,1200.0,167.0,192.0,0.0],"active":3,"total":1559.0,"augZero":true},{"id":"4.1710784E7","name":"SANTOSH VAIJNATH KAPSE","mobile":"8668296523","city":"PARLI","district":"Beed","months":[507.0,494.0,113.0,0.0,0.0,0.0],"active":3,"total":1114.0,"augZero":true},{"id":"4.2433056E7","name":"Shridhar tatyarav devkte","mobile":"9763562850","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,1848.0,800.0,0.0],"active":2,"total":2648.0,"augZero":true},{"id":"3.9243727E7","name":"ROHINI DNYANESHWAR SHENGULE","mobile":"9405394084","city":"PARBHANI","district":"Parbhani","months":[0.0,0.0,0.0,1273.0,1273.0,0.0],"active":2,"total":2546.0,"augZero":true},{"id":"4.243277E7","name":"Laxmi arun mantre","mobile":"9730634890","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,838.0,830.0,0.0],"active":2,"total":1668.0,"augZero":true},{"id":"4.2422043E7","name":"Ramesh bhanudas dhimdhime","mobile":"9922984489","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,1087.0,446.0,0.0],"active":2,"total":1533.0,"augZero":true},{"id":"4.239001E7","name":"Kunal haribhau shinde","mobile":"8010407019","city":"0.0","district":"0.0","months":[0.0,0.0,993.0,493.0,0.0,0.0],"active":2,"total":1486.0,"augZero":true},{"id":"3.8317934E7","name":"Bandu Dagdu Hole","mobile":"9689061263","city":"rashin","district":"Ahmednagar","months":[0.0,0.0,0.0,931.0,470.0,0.0],"active":2,"total":1401.0,"augZero":true},{"id":"3.7985473E7","name":"PRIYA RAHUL BHORGE","mobile":"8237158887","city":"PARBHANI","district":"Parbhani","months":[0.0,943.0,0.0,0.0,458.0,0.0],"active":2,"total":1401.0,"augZero":true},{"id":"3.991309E7","name":"Bharati Kiran Balkhande","mobile":"9767131335","city":"Hadgaon","district":"Nanded","months":[0.0,1072.0,0.0,328.0,0.0,0.0],"active":2,"total":1400.0,"augZero":true},{"id":"3.9200995E7","name":"Anand.j.kamble","mobile":"9665581317","city":"parli v","district":"Beed","months":[585.0,0.0,667.0,0.0,0.0,0.0],"active":2,"total":1252.0,"augZero":true},{"id":"4.2289412E7","name":"Anjali laxmikant vazurkar","mobile":"7972901433","city":"PARBHANI","district":"PARBHANI","months":[0.0,1157.0,45.0,0.0,0.0,0.0],"active":2,"total":1202.0,"augZero":true},{"id":"4.2468998E7","name":"Vilas madhukar bhale","mobile":"7020870149","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,977.0,200.0,0.0],"active":2,"total":1177.0,"augZero":true},{"id":"4.2120331E7","name":"Ingle harishchandra madhukarrav","mobile":"9209652022","city":"SONPETH","district":"PARBHANI","months":[971.0,166.0,0.0,0.0,0.0,0.0],"active":2,"total":1137.0,"augZero":true},{"id":"4.2424182E7","name":"Ashok mathuradas satpute","mobile":"8999561011","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,932.0,110.0,0.0],"active":2,"total":1042.0,"augZero":true},{"id":"3.8086472E7","name":"GAVALAN MUNJAJI VAIDYA","mobile":"9370469860","city":"Parbhani","district":"Parbhani","months":[0.0,816.0,0.0,187.0,0.0,0.0],"active":2,"total":1003.0,"augZero":true},{"id":"4.0763128E7","name":"SUWARNMALA BALIRAM SANAP","mobile":"9373226376","city":"PARLI","district":"Beed","months":[676.0,0.0,304.0,0.0,0.0,0.0],"active":2,"total":980.0,"augZero":true},{"id":"4.2301284E7","name":"Dhananjay madhukar kulkarni","mobile":"9552438111","city":"BEED","district":"BEED","months":[0.0,748.0,201.0,0.0,0.0,0.0],"active":2,"total":949.0,"augZero":true},{"id":"3.9815194E7","name":"Varsha Appasaheb Gayke","mobile":"8669093304","city":"Jalna","district":"Jalna","months":[396.0,0.0,0.0,445.0,0.0,0.0],"active":2,"total":841.0,"augZero":true},{"id":"3.9330132E7","name":"Manjusha Prashant Deshpande","mobile":"9422878287","city":"Parbhani","district":"Parbhani","months":[0.0,332.0,498.0,0.0,0.0,0.0],"active":2,"total":830.0,"augZero":true},{"id":"4.0114303E7","name":"Shreyas Kamblaji Kshirsagar","mobile":"9422179477","city":"Parbhani","district":"Parbhani","months":[401.0,426.0,0.0,0.0,0.0,0.0],"active":2,"total":827.0,"augZero":true},{"id":"4.1636127E7","name":"Mahadev Limbraj Bagal","mobile":"9890424514","city":"Kolkanadi","district":"Beed","months":[3.0,512.0,0.0,0.0,0.0,0.0],"active":2,"total":515.0,"augZero":true},{"id":"4.2051043E7","name":"Shraddha yogesh honrao","mobile":"9764755000","city":"SANGOLA","district":"SOLAPUR","months":[0.0,0.0,264.0,105.0,0.0,0.0],"active":2,"total":369.0,"augZero":true},{"id":"4.1966256E7","name":"Ramesh satva jogdand","mobile":"7249152637","city":"Ambajogai","district":"BEED","months":[50.0,10.0,0.0,0.0,0.0,0.0],"active":2,"total":60.0,"augZero":true},{"id":"4.2418859E7","name":"Ambika ashok surwase","mobile":"9405351484","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,1701.0,0.0,0.0],"active":1,"total":1701.0,"augZero":true},{"id":"4.2545522E7","name":"Anita uttam jachak","mobile":"7057685663","city":"Ambajogai","district":"BEED","months":[0.0,0.0,0.0,0.0,1688.0,0.0],"active":1,"total":1688.0,"augZero":true},{"id":"4.2306596E7","name":"Shital dineshsinh rajput","mobile":"9834051171","city":"Ausa","district":"LATUR","months":[0.0,1627.0,0.0,0.0,0.0,0.0],"active":1,"total":1627.0,"augZero":true},{"id":"4.2397514E7","name":"Manisha satish avhad","mobile":"9699119306","city":"0.0","district":"0.0","months":[0.0,0.0,1416.0,0.0,0.0,0.0],"active":1,"total":1416.0,"augZero":true},{"id":"3.9343159E7","name":"SEEMA SANJAY SHINDE","mobile":"7020738186","city":"PARBHANI","district":"Parbhani","months":[0.0,0.0,1333.0,0.0,0.0,0.0],"active":1,"total":1333.0,"augZero":true},{"id":"4.2422235E7","name":"Swaranjali ganpat dahiwade","mobile":"9021347030","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,1246.0,0.0,0.0],"active":1,"total":1246.0,"augZero":true},{"id":"4.2403822E7","name":"Nikita subhash rathod","mobile":"7507101876","city":"0.0","district":"0.0","months":[0.0,0.0,1140.0,0.0,0.0,0.0],"active":1,"total":1140.0,"augZero":true},{"id":"4.2328805E7","name":"Vrashnka vivekanand raghu","mobile":"8080043572","city":"UDGIR","district":"LATUR","months":[0.0,0.0,1139.0,0.0,0.0,0.0],"active":1,"total":1139.0,"augZero":true},{"id":"4.2472268E7","name":"Pooja vishwajeet chavan","mobile":"9834981473","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,1114.0,0.0,0.0],"active":1,"total":1114.0,"augZero":true},{"id":"4.2502151E7","name":"Nikita balasaheb rasal","mobile":"9359275100","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,1101.0,0.0,0.0],"active":1,"total":1101.0,"augZero":true},{"id":"4.2522412E7","name":"Ashvini babasaheb deshmukh","mobile":"9730534197","city":"PARLI VAIJNATH","district":"BEED","months":[0.0,0.0,0.0,0.0,1064.0,0.0],"active":1,"total":1064.0,"augZero":true},{"id":"4.2405232E7","name":"Vishwajit ram chavan","mobile":"9011489702","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,1041.0,0.0,0.0],"active":1,"total":1041.0,"augZero":true},{"id":"4.2427614E7","name":"Nagnath akrur dahiwade","mobile":"7620674721","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,1010.0,0.0,0.0],"active":1,"total":1010.0,"augZero":true},{"id":"4.2535065E7","name":"Rajendra eknath avhad","mobile":"7588514318","city":"parli Vaijnath","district":"BEED","months":[0.0,0.0,0.0,0.0,936.0,0.0],"active":1,"total":936.0,"augZero":true},{"id":"4.2438834E7","name":"Abhijeet anantrao deshpande","mobile":"9545940505","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,930.0,0.0,0.0],"active":1,"total":930.0,"augZero":true},{"id":"4.2422121E7","name":"Priyanka ganpat dahiwade","mobile":"9096665938","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,852.0,0.0,0.0],"active":1,"total":852.0,"augZero":true},{"id":"3.9367523E7","name":"Devidas Achyutrao jadhav","mobile":"9552430940","city":"jalna","district":"Jalna","months":[0.0,0.0,0.0,842.9,0.0,0.0],"active":1,"total":842.9,"augZero":true},{"id":"4.2527544E7","name":"Vaibhav devanand kale","mobile":"9145105955","city":"Parli Vaijnath","district":"BEED","months":[0.0,0.0,0.0,0.0,830.0,0.0],"active":1,"total":830.0,"augZero":true},{"id":"4.1980644E7","name":"Basaling mahadev akulkar","mobile":"8459520400","city":"LATUR","district":"LATUR","months":[0.0,809.0,0.0,0.0,0.0,0.0],"active":1,"total":809.0,"augZero":true},{"id":"4.2088364E7","name":"Meena kishor kale","mobile":"9028757545","city":"Parli","district":"BEED","months":[802.0,0.0,0.0,0.0,0.0,0.0],"active":1,"total":802.0,"augZero":true},{"id":"4.2329373E7","name":"Geeta laxman kadam","mobile":"9689070676","city":"PARLI VAIJNATH","district":"BEED","months":[0.0,0.0,0.0,748.0,0.0,0.0],"active":1,"total":748.0,"augZero":true},{"id":"4.2261441E7","name":"Rajabhau suryabhan nagargoje","mobile":"8484925411","city":"PARLI","district":"BEED","months":[0.0,0.0,0.0,748.0,0.0,0.0],"active":1,"total":748.0,"augZero":true},{"id":"4.2437453E7","name":"Sachin diliprao shete","mobile":"9850735377","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,748.0,0.0,0.0],"active":1,"total":748.0,"augZero":true},{"id":"4.1982072E7","name":"Nagesh phulchand dhumal","mobile":"9921387353","city":"LATUR","district":"LATUR","months":[548.0,0.0,0.0,0.0,0.0,0.0],"active":1,"total":548.0,"augZero":true},{"id":"4.2580314E7","name":"Jyoti rahul ghadge","mobile":"8999288707","city":"Parli","district":"BEED","months":[0.0,0.0,0.0,0.0,337.0,0.0],"active":1,"total":337.0,"augZero":true},{"id":"4.1713202E7","name":"PATHAN ARFAT KHAN","mobile":"8888504328","city":"Parli v","district":"Beed","months":[0.0,249.0,0.0,0.0,0.0,0.0],"active":1,"total":249.0,"augZero":true},{"id":"3.9339712E7","name":"Dnyaneshwar Machindr khole","mobile":"9545507492","city":"Aurangabad","district":"Aurangabad","months":[0.0,0.0,0.0,230.0,0.0,0.0],"active":1,"total":230.0,"augZero":true},{"id":"4.1985046E7","name":"Archana fulchand sakhare","mobile":"9096995241","city":"AMBAJOGAI","district":"BEED","months":[0.0,191.0,0.0,0.0,0.0,0.0],"active":1,"total":191.0,"augZero":true},{"id":"3.9475699E7","name":"Dilip Laxmanrao Bharade","mobile":"7972945226","city":"Parbhani","district":"Parbhani","months":[0.0,0.0,164.0,0.0,0.0,0.0],"active":1,"total":164.0,"augZero":true},{"id":"4.1718643E7","name":"Shivling Keshav Lamture","mobile":"8180900778","city":"Yusuf Wadgaon","district":"Beed","months":[107.0,0.0,0.0,0.0,0.0,0.0],"active":1,"total":107.0,"augZero":true},{"id":"4.2097129E7","name":"mahananda hanuman mule","mobile":"9422991744","city":"PARLI","district":"BEED","months":[3.0,0.0,0.0,0.0,0.0,0.0],"active":1,"total":3.0,"augZero":true},{"id":"4.152063E7","name":"SHIVKANYA VILAS LAMTURE","mobile":"7218062161","city":"YUSUF WADGOAN","district":"Beed","months":[3.0,0.0,0.0,0.0,0.0,0.0],"active":1,"total":3.0,"augZero":true},{"id":"4.2427753E7","name":"Pratik madhukar thakur","mobile":"8862071200","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,0.0,0.0,0.0],"active":0,"total":0.0,"augZero":true},{"id":"3.8082215E7","name":"TUKARAM MANKAJI HARKAL","mobile":"7385224657","city":"Parbhani","district":"Parbhani","months":[0.0,0.0,0.0,0.0,0.0,0.0],"active":0,"total":0.0,"augZero":true},{"id":"4.0288554E7","name":"Vijay prabhauappa misal","mobile":"7249770720","city":"Parli v","district":"Beed","months":[0.0,0.0,0.0,0.0,0.0,0.0],"active":0,"total":0.0,"augZero":true},{"id":"3.9262092E7","name":"JAYA DEEPAK SHENGULE","mobile":"9890745845","city":"PARBHANI","district":"Parbhani","months":[2511.0,2847.0,2543.0,2562.0,2565.0,2590.0],"active":6,"total":15618.0,"augZero":false},{"id":"3.7950229E7","name":"SHILA SUDATT MASKE","mobile":"7028348084","city":"Parbhani","district":"Parbhani","months":[2502.0,2507.0,2514.0,2509.0,2761.0,2713.0],"active":6,"total":15506.0,"augZero":false},{"id":"3.9055552E7","name":"Maya Anil Tikhe","mobile":"8484036006","city":"Parbhani","district":"Parbhani","months":[3455.0,1530.0,3221.0,2124.0,3035.0,1983.0],"active":6,"total":15348.0,"augZero":false},{"id":"4.204656E7","name":"Suwarna vijay misal","mobile":"9307715536","city":"PARLI V","district":"BEED","months":[1857.0,1505.0,2590.0,3415.0,2779.0,3140.0],"active":6,"total":15286.0,"augZero":false},{"id":"3.9346831E7","name":"HARSHADA LINGAPPA GUJAR","mobile":"8766451891","city":"AMBAJOGAI","district":"Beed","months":[2503.0,2503.0,2509.0,2510.0,2541.0,651.0],"active":6,"total":13217.0,"augZero":false},{"id":"3.8610859E7","name":"GAWALE RAHUL HARIBHAU","mobile":"9028100561","city":"Gangakhed","district":"Parbhani","months":[883.0,2399.0,1294.0,4173.0,1756.0,2671.0],"active":6,"total":13176.0,"augZero":false},{"id":"4.2220005E7","name":"Komal hanuman zete","mobile":"9623181628","city":"MAJALGAON","district":"BEED","months":[1249.0,2114.0,1310.0,840.0,759.0,1360.0],"active":6,"total":7632.0,"augZero":false},{"id":"4.2083352E7","name":"Mankarna ganapat dahiwade","mobile":"9545817296","city":"PARLI VAIJNATH","district":"BEED","months":[341.0,940.0,681.0,3173.0,1507.0,769.0],"active":6,"total":7411.0,"augZero":false},{"id":"3.974293E7","name":"YASHODA TUKARAM HARKAL","mobile":"8087813850","city":"Parbhani","district":"Parbhani","months":[852.0,171.0,1305.0,1531.0,1502.0,1925.0],"active":6,"total":7286.0,"augZero":false},{"id":"3.9283532E7","name":"ARJUN NAMDEV CHORMARE","mobile":"9145316625","city":"Jalna","district":"Jalna","months":[1658.0,900.0,917.0,1111.0,1019.0,1554.0],"active":6,"total":7159.0,"augZero":false},{"id":"3.8316425E7","name":"RAVIKIRAN RAJENDRA CHAVAN","mobile":"7822053390","city":"KARJAT","district":"Ahmednagar","months":[1007.0,1057.0,1027.0,1028.0,1006.0,1020.0],"active":6,"total":6145.0,"augZero":false},{"id":"3.8379742E7","name":"Rahul Rajendra Chavan","mobile":"7028641068","city":"Chilwadi","district":"Ahmednagar","months":[1012.0,1007.0,1003.0,1069.0,1036.0,1013.0],"active":6,"total":6140.0,"augZero":false},{"id":"4.1896344E7","name":"Rajesh diliprao shete","mobile":"9850536105","city":"PARLI VAIJNATH","district":"BEED","months":[739.0,707.0,660.0,1162.0,1503.0,798.0],"active":6,"total":5569.0,"augZero":false},{"id":"4.1471161E7","name":"GANESH BHIMASHANKAR GUJAR","mobile":"9145017052","city":"AMBAJOGAI","district":"Beed","months":[1368.0,115.0,823.0,389.0,1235.0,226.0],"active":6,"total":4156.0,"augZero":false},{"id":"3.8427953E7","name":"ARCHANA SADASHIV KHANPATE","mobile":"9272634020","city":"PARBHANI","district":"Parbhani","months":[743.0,414.0,511.0,643.0,421.0,509.0],"active":6,"total":3241.0,"augZero":false},{"id":"3.9338659E7","name":"kisan Bhaurav Salve","mobile":"9890178223","city":"Jalna","district":"Jalna","months":[690.0,166.0,822.0,366.0,531.0,569.0],"active":6,"total":3144.0,"augZero":false},{"id":"4.0766042E7","name":"BABURAO KANHOJI SARODE","mobile":"9890050356","city":"Parbhani","district":"Parbhani","months":[395.0,249.0,166.0,621.0,415.0,252.0],"active":6,"total":2098.0,"augZero":false},{"id":"3.8477029E7","name":"TEJASH MANIKRAO SHENGULE","mobile":"7796428066","city":"PARBHANI","district":"Parbhani","months":[162.0,427.0,42.0,340.0,694.0,310.0],"active":6,"total":1975.0,"augZero":false},{"id":"4.2301332E7","name":"Sandeep anilrao pujari","mobile":"8421213034","city":"PARLI VAIJNATH","district":"BEED","months":[0.0,1228.0,799.0,749.0,2655.0,804.0],"active":5,"total":6235.0,"augZero":false},{"id":"3.9398983E7","name":"UMAKANT MADHUKAR WADGAONKAR","mobile":"8552926556","city":"Jalna","district":"Jalna","months":[461.0,891.0,648.0,894.0,0.0,774.0],"active":5,"total":3668.0,"augZero":false},{"id":"4.178981E7","name":"Padmin balaji javle","mobile":"9307563878","city":"PARBHANI","district":"PARBHANI","months":[631.0,341.0,0.0,1033.0,496.0,165.0],"active":5,"total":2666.0,"augZero":false},{"id":"3.9358806E7","name":"Adhav Prabhakar Ganpatrao","mobile":"9822978511","city":"Jalna","district":"Jalna","months":[630.0,653.0,362.0,653.0,0.0,270.0],"active":5,"total":2568.0,"augZero":false},{"id":"4.2325269E7","name":"Lata danyanoba honmane","mobile":"9623963478","city":"parali","district":"BEED","months":[0.0,945.0,195.0,333.0,109.0,713.0],"active":5,"total":2295.0,"augZero":false},{"id":"4.2045649E7","name":"Pramila rambhau ghodke","mobile":"9146560598","city":"JALNA","district":"JALNA","months":[445.0,436.0,36.0,0.0,232.0,766.0],"active":5,"total":1915.0,"augZero":false},{"id":"3.8428306E7","name":"AMOL VAIJNATH SHENGULE","mobile":"8830661019","city":"PARBHANI","district":"Parbhani","months":[102.0,407.0,0.0,374.0,274.0,592.0],"active":5,"total":1749.0,"augZero":false},{"id":"3.9890863E7","name":"Priya Nivrutti Sarwade","mobile":"9730573485","city":"Parli","district":"Beed","months":[1200.0,0.0,1273.0,960.0,0.0,960.0],"active":4,"total":4393.0,"augZero":false},{"id":"4.2289302E7","name":"Yamuna ashok phad","mobile":"9552308373","city":"PARLI","district":"BEED","months":[0.0,873.0,566.0,0.0,1397.0,696.0],"active":4,"total":3532.0,"augZero":false},{"id":"4.2069313E7","name":"Gangadhar rajaram harkal","mobile":"9763203515","city":"PARBHANI","district":"PARBHANI","months":[9.0,1273.0,0.0,1273.0,0.0,435.0],"active":4,"total":2990.0,"augZero":false},{"id":"4.229847E7","name":"Pallavi nilviraj chopade","mobile":"8149165348","city":"Parli Vaijnath","district":"BEED","months":[0.0,1069.0,809.0,101.0,0.0,435.0],"active":4,"total":2414.0,"augZero":false},{"id":"3.8378868E7","name":"Sujit Subhash Chavan","mobile":"9075890414","city":"SHETFHAL HAWELI","district":"Pune","months":[0.0,673.0,0.0,415.0,294.0,895.0],"active":4,"total":2277.0,"augZero":false},{"id":"4.2020917E7","name":"Avinash suryakant khot","mobile":"9850547444","city":"PARLI VAIJNATH","district":"BEED","months":[395.0,751.0,0.0,498.0,0.0,588.0],"active":4,"total":2232.0,"augZero":false},{"id":"3.9536345E7","name":"Satyashil Sitaram Gaikwad","mobile":"9922669254","city":"Gangakhed","district":"Parbhani","months":[401.0,499.0,0.0,0.0,394.0,375.0],"active":4,"total":1669.0,"augZero":false},{"id":"3.9477523E7","name":"SUKHADEV ASARAM SHINDE","mobile":"9975657141","city":"JALNA","district":"Jalna","months":[3.0,679.0,0.0,0.0,190.0,521.0],"active":4,"total":1393.0,"augZero":false},{"id":"4.1690217E7","name":"SHAMRAO MAROTRAO BOBDE","mobile":"9673973145","city":"PARTUR","district":"Jalna","months":[336.0,546.0,0.0,156.0,0.0,99.0],"active":4,"total":1137.0,"augZero":false},{"id":"3.8598399E7","name":"Rupali Rajendra Waghamare","mobile":"7756854027","city":"gursuli","district":"Solapur","months":[134.0,188.0,265.0,0.0,0.0,290.0],"active":4,"total":877.0,"augZero":false},{"id":"4.1531231E7","name":"MANOJ VILAS GUJAR","mobile":"7758050992","city":"AMBAJOGAI","district":"Beed","months":[42.0,0.0,0.0,76.0,42.0,42.0],"active":4,"total":202.0,"augZero":false},{"id":"4.232315E7","name":"Anita vasant sanap","mobile":"8999428380","city":"PARLI","district":"BEED","months":[0.0,1365.0,0.0,0.0,96.0,1112.0],"active":3,"total":2573.0,"augZero":false},{"id":"4.2443423E7","name":"Anusaya narsing gayakwad","mobile":"7218534295","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,1410.0,307.0,675.0],"active":3,"total":2392.0,"augZero":false},{"id":"4.2329859E7","name":"Rani ankush lad","mobile":"7507727052","city":"manvat","district":"PARBHANI","months":[0.0,0.0,1665.0,100.0,0.0,408.0],"active":3,"total":2173.0,"augZero":false},{"id":"4.2401651E7","name":"Snehal manikrao shengule","mobile":"9309735358","city":"0.0","district":"0.0","months":[0.0,0.0,904.0,124.0,0.0,1041.0],"active":3,"total":2069.0,"augZero":false},{"id":"4.2442269E7","name":"Shreyash maheshrao virdhe","mobile":"7822044377","city":"0.0","district":"0.0","months":[0.0,0.0,0.0,1110.0,544.0,108.0],"active":3,"total":1762.0,"augZero":false},{"id":"3.8391289E7","name":"Satyajeet Subhash Chavan","mobile":"8600616301","city":"Shetphal Haveli","district":"Pune","months":[0.0,0.0,0.0,830.0,119.0,510.0],"active":3,"total":1459.0,"augZero":false},{"id":"3.9296089E7","name":"Gayatri Rambhau Ghodke","mobile":"8767440421","city":"Jalna","district":"Jalna","months":[260.0,0.0,0.0,0.0,383.0,713.0],"active":3,"total":1356.0,"augZero":false},{"id":"3.937567E7","name":"Vandana Vaijnath Mujmule","mobile":"8308294675","city":"Gangakhed","district":"Parbhani","months":[126.0,0.0,316.0,0.0,0.0,670.0],"active":3,"total":1112.0,"augZero":false},{"id":"3.9232725E7","name":"Rambhau Daulatrao Ghodke","mobile":"7798656059","city":"Jalna","district":"Jalna","months":[650.0,127.0,0.0,0.0,0.0,120.0],"active":3,"total":897.0,"augZero":false},{"id":"3.9346838E7","name":"Bharti Ravindra Deshmukh","mobile":"9420612932","city":"Nanded","district":"Nanded","months":[0.0,136.0,207.0,0.0,0.0,98.0],"active":3,"total":441.0,"augZero":false},{"id":"4.2518137E7","name":"Govind lakshman karale","mobile":"9822836236","city":"Parli Vaijnath","district":"BEED","months":[0.0,0.0,0.0,0.0,874.0,1651.0],"active":2,"total":2525.0,"augZero":false},{"id":"4.2519992E7","name":"Rekha shivaji kale","mobile":"9921981063","city":"PARLI","district":"BEED","months":[0.0,0.0,0.0,0.0,1178.0,1216.0],"active":2,"total":2394.0,"augZero":false},{"id":"4.255012E7","name":"Anita shivling salagare","mobile":"9325759132","city":"Parli Vaijnath","district":"BEED","months":[0.0,0.0,0.0,0.0,830.0,1090.0],"active":2,"total":1920.0,"augZero":false},{"id":"4.252536E7","name":"Ganesh pralhadrao badane","mobile":"9834504074","city":"Parli Vaijnath","district":"BEED","months":[0.0,0.0,0.0,0.0,1155.0,517.0],"active":2,"total":1672.0,"augZero":false},{"id":"4.2333848E7","name":"Rupali avinash khot","mobile":"9325346966","city":"parali","district":"BEED","months":[0.0,0.0,1230.0,0.0,0.0,420.0],"active":2,"total":1650.0,"augZero":false},{"id":"4.2516783E7","name":"Ganesh shivkumar swami","mobile":"9730187504","city":"parli Vaijnath","district":"BEED","months":[0.0,0.0,0.0,0.0,870.0,309.0],"active":2,"total":1179.0,"augZero":false},{"id":"4.2517773E7","name":"Kanchan sandeep pujari","mobile":"7620263505","city":"parli Vaijnath","district":"BEED","months":[0.0,0.0,0.0,0.0,1013.0,140.0],"active":2,"total":1153.0,"augZero":false},{"id":"4.2522507E7","name":"Vaijnath digambar shete","mobile":"9096371707","city":"PARLI VAIJNATH","district":"BEED","months":[0.0,0.0,0.0,0.0,330.0,660.0],"active":2,"total":990.0,"augZero":false},{"id":"4.1040539E7","name":"Hajare swati Bansi","mobile":"8329409968","city":"Parli- v","district":"Beed","months":[5.0,0.0,0.0,0.0,0.0,190.0],"active":2,"total":195.0,"augZero":false},{"id":"4.2673943E7","name":"Manisha vilas shelke","mobile":"9322319384","city":"Selu","district":"Parbhani","months":[0.0,0.0,0.0,0.0,0.0,1848.0],"active":1,"total":1848.0,"augZero":false},{"id":"4.2633935E7","name":"Laxminarayan radhakishanji didwani","mobile":"9260517041","city":"Parli Vaijnath","district":"Beed","months":[0.0,0.0,0.0,0.0,0.0,1247.0],"active":1,"total":1247.0,"augZero":false},{"id":"4.2694895E7","name":"Shubhangi pramod pallaye","mobile":"7522932821","city":"Purna","district":"Parbhani","months":[0.0,0.0,0.0,0.0,0.0,1151.0],"active":1,"total":1151.0,"augZero":false},{"id":"4.2673886E7","name":"Minakshi sitaram bakan","mobile":"9604594645","city":"Dohara","district":"Parbhani","months":[0.0,0.0,0.0,0.0,0.0,921.0],"active":1,"total":921.0,"augZero":false},{"id":"4.2630807E7","name":"Santosh balaji shinde","mobile":"9922615475","city":"Parli Vaijnath","district":"Beed","months":[0.0,0.0,0.0,0.0,0.0,870.0],"active":1,"total":870.0,"augZero":false},{"id":"4.2678827E7","name":"Manik dhondiram latinge","mobile":"9689548870","city":"PARALI","district":"Beed","months":[0.0,0.0,0.0,0.0,0.0,855.0],"active":1,"total":855.0,"augZero":false},{"id":"3.8312075E7","name":"SITARAM NAMDEO BAKAN","mobile":"7972826607","city":"PARBHANI","district":"Parbhani","months":[0.0,0.0,0.0,0.0,0.0,822.0],"active":1,"total":822.0,"augZero":false},{"id":"4.2675864E7","name":"Vijay khanduappa khot","mobile":"7276658600","city":"parli Vaijnath","district":"Beed","months":[0.0,0.0,0.0,0.0,0.0,797.0],"active":1,"total":797.0,"augZero":false},{"id":"4.262774E7","name":"Prashant vasantrao tulshi","mobile":"9890713814","city":"Parli Vaijnath","district":"Beed","months":[0.0,0.0,0.0,0.0,0.0,756.0],"active":1,"total":756.0,"augZero":false},{"id":"3.9781257E7","name":"Sudarshan Dnyanoba Kamble","mobile":"8855919374","city":"Gangakhed","district":"Parbhani","months":[0.0,0.0,0.0,0.0,0.0,633.0],"active":1,"total":633.0,"augZero":false}];
+const MN=['Mar','Apr','May','Jun','Jul','Aug'];
+let filter='aug0';
+const q=document.getElementById('q'), list=document.getElementById('list'), includePv=document.getElementById('includePv');
+const doneKey='team_unique_rcm_msg_sent_v2';
+let done={};
+try{ done=JSON.parse(localStorage.getItem(doneKey)||'{}')||{}; }catch(e){done={};}
+function fmt(n){ return Number(n).toLocaleString('en-IN',{maximumFractionDigits:0}); }
+function level(r){ if(r.active===6)return ['6/6 Consistent','b6']; if(r.active>=4)return [r.active+'/6 Near Consistency','b45']; if(r.active>=1)return [r.active+'/6 Irregular','b13']; return ['0/6 Inactive','b0']; }
+function cleanPhone(p){ const d=String(p||'').replace(/\D/g,''); return d.length>=10?d.slice(-10):d; }
+function titleName(s){return String(s||'').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());}
+function message(r){
+  let body='नमस्कार '+titleName(r.name)+' जी 🙏\n\n';
+  body+='तुमच्या मागील 6 महिन्यांच्या RCM खरेदीचा छोटासा आढावा 👇\n\n';
+  if(includePv.checked) body+='📊 *6 Month PV*\n'+MN.map((m,i)=>m+': '+fmt(r.months[i])+' PV').join('\n')+'\n\n';
+  body+='🎁 *RCM 6 Month Consistency Benefit*\n';
+  body+='✅ 100–1499 PV → पात्र 6 महिन्यांच्या Total PV च्या *12% DP Value* इतकी Free Products\n';
+  body+='✅ 1500+ PV → *1500 DP Value* Free Products\n';
+  body+='✅ 2500+ PV → *2500 DP Value* Free Products\n';
+  body+='✅ 5000+ PV → *5000 DP Value* Free Products\n\n';
+  body+='🎟️ 6 महिने पूर्ण झाल्यावर पात्रतेनुसार *Digital Coupon* मिळतो. Earned Reward प्रमाणे जवळच्या *RCM Distribution Center* मधून Free Products घेता येतात. Reward Products 6 महिने पूर्ण झाल्यानंतर *45 ते 135 दिवसांच्या कालावधीत*, जास्तीत जास्त *3 वेळा* घेता येतात. Cash मिळत नाही.\n\n';
+  body+='🌿 *आरोग्य + घरखर्च बचत*\n';
+  body+='घरात नियमित लागणारी Health, Nutrition, Personal Care आणि Home Care Products नियोजनाने घेतल्यामुळे Consistency टिकवणे आणि घरखर्च अधिक शिस्तबद्ध ठेवणे सोपे होते.\n\n';
+  if(r.augZero){
+    body+='📌 *ऑगस्ट महिन्याची खरेदी अजून बाकी दिसत आहे.*\n31 ऑगस्टपूर्वी Consistency पूर्ण करण्यासाठी किती PV आवश्यक आहे किंवा कोणते products घ्यावेत यासाठी संपर्क करा. 🙏\n\n';
+  }else{
+    body+='✅ या महिन्याची खरेदी झाल्याबद्दल धन्यवाद. अशीच Consistency कायम ठेवा. काही माहिती / मदत हवी असल्यास संपर्क करा. 🙏\n\n';
+  }
+  body+='*TEAM UNIQUE* 🌿';
+  return body;
+}
+function waLink(r){const p=cleanPhone(r.mobile);return p.length===10?'https://wa.me/91'+p+'?text='+encodeURIComponent(message(r)):'#';}
+function callLink(r){const p=cleanPhone(r.mobile);return p.length===10?'tel:+91'+p:'#';}
+function keyOf(r){return String(r.id||r.mobile||r.name);}
+function isSent(r){return !!done[keyOf(r)];}
+function matchFilter(r){if(filter==='all')return true;if(filter==='aug0')return r.augZero;if(filter==='six')return r.active===6;if(filter==='near')return r.active>=4&&r.active<=5;if(filter==='low')return r.active>=1&&r.active<=3;if(filter==='inactive')return r.active===0;if(filter==='pending')return !isSent(r);if(filter==='sent')return isSent(r);return true;}
+function updateStats(){document.getElementById('statTotal').textContent=DATA.length;document.getElementById('statAug').textContent=DATA.filter(r=>r.augZero).length;document.getElementById('statSix').textContent=DATA.filter(r=>r.active===6).length;document.getElementById('statSent').textContent=DATA.filter(isSent).length;}
+function render(){
+ const s=q.value.trim().toLowerCase();
+ const rows=DATA.filter(r=>matchFilter(r)&&(!s||(r.name+' '+r.mobile+' '+r.city+' '+r.district).toLowerCase().includes(s)));
+ updateStats();
+ if(!rows.length){list.innerHTML='<div class="empty">या filter मध्ये ग्राहक सापडले नाहीत.</div>';return;}
+ list.innerHTML=rows.map(r=>{
+  const [lab,cls]=level(r),key=keyOf(r),sent=isSent(r),ph=cleanPhone(r.mobile),valid=ph.length===10;
+  const pv=r.months.map((v,i)=>`<div class="pv ${v===0?'zero':''} ${i===5?'current':''}"><div class="m">${MN[i]}</div><div class="v">${fmt(v)}</div></div>`).join('');
+  return `<article class="card ${sent?'sent-card':''}" data-card="${encodeURIComponent(key)}">
+    <div class="top"><div><div class="name">${escapeHtml(r.name)} <span class="sentTag">MSG SENT ✓</span></div><div class="meta">${escapeHtml(r.city||r.district||'')} · ${valid?ph:'Mobile unavailable'}</div></div><span class="badge ${cls}">${lab}</span></div>
+    <div class="pvgrid">${pv}</div>
+    <div class="info"><span class="pill"><strong>Total:</strong> ${fmt(r.total)} PV</span><span class="pill"><strong>Active:</strong> ${r.active}/6 महिने</span><span class="pill saving">🌿 आरोग्य + घरखर्च नियोजन</span></div>
+    <div class="actions">
+      <a class="btn wa ${valid?'':'badphone'}" data-wa="${encodeURIComponent(key)}" href="${valid?waLink(r):'#'}" target="_blank" rel="noopener">💬 WhatsApp</a>
+      <a class="btn call ${valid?'':'badphone'}" href="${valid?callLink(r):'#'}">📞 Call</a>
+      <button class="sentBtn ${sent?'isdone':''}" data-sent="${encodeURIComponent(key)}">${sent?'✓ Sent':'Msg Sent'}</button>
+    </div>
+  </article>`;
+ }).join('');
+}
+function escapeHtml(str){return String(str||'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));}
+function save(){localStorage.setItem(doneKey,JSON.stringify(done));updateStats();}
+document.getElementById('filters').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.f;render();});
+q.addEventListener('input',render);
+includePv.addEventListener('change',render);
+list.addEventListener('click',e=>{
+ const sbtn=e.target.closest('[data-sent]');
+ if(sbtn){const key=decodeURIComponent(sbtn.dataset.sent);done[key]=!done[key];save();render();return;}
+ const w=e.target.closest('[data-wa]');
+ if(w){const key=decodeURIComponent(w.dataset.wa);done[key]=true;save();const card=w.closest('.card');if(card)card.classList.add('sent-card');}
+});
+render();
 </script>
-
 </body>
 </html>
